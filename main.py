@@ -97,8 +97,8 @@ def getPlotOfField(time):
     ax.streamplot(X, Y, Ux, Vy,
                   color='b')
 
-    fig.set_figwidth(8)  # ширина и
-    fig.set_figheight(8)  # высота "Figure"
+    fig.set_figwidth(8)  # ширина
+    fig.set_figheight(8)  # высота
 
     # сохраняем
     plt.savefig('plots/plots_in_time_' + str(round(time, 1)) + '_sec.svg', format='svg', dpi=1200)
