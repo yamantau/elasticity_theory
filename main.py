@@ -94,8 +94,7 @@ def getPlotOfField(time):
     fig, ax = plt.subplots()
 
     ax.quiver(X, Y, Ux, Vy)
-    ax.streamplot(X, Y, Ux, Vy,
-                  color='b')
+    ax.streamplot(X, Y, Ux, Vy, color='b')
 
     fig.set_figwidth(8)  # ширина
     fig.set_figheight(8)  # высота
