@@ -1,3 +1,6 @@
+from models.material_points import Material_points
+from models.material_body import Material_body
+from models.point_trajectory import Point_trajectory
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -11,14 +14,29 @@ y_0=-1
 # кол-во итераций/кол-во x-ов
 n = 100
 
-# задаем наши функции х(т) и у(т)
 def f_x(t, x):
     return - np.log(t) * x
+
 def f_y(t, y):
     return np.exp(t) * y
 
-# метод рунге - кутты
-# зададим коэфиценты таблицы(серединные и нижние и левые)
+def create_material_body(time):
+    material_points = []
+    i = -1.1
+    while i < -0.11:
+        i += 0.1
+
+        Vx = f_x(time, i)
+        Vy = f_y(time, -1)
+
+        mp = Material_points(i, -1, Vx, Vy)
+
+        material_points.append(mp)
+
+    return Material_body(material_points, time)
+
+body = create_material_body(0.1)
+
 a = np.array([
     [0, 0, 0, 0],  # a0
     [0, 0, 0, 0],  # a1
@@ -32,7 +50,6 @@ b = np.array([0, 1 / 4, 0, 3/4])
 # левая часть
 c = np.array([0, 0, 1/3, 2/3])
 
-# метод, который осуществляет рассчет значений по методу рунге
 def runge_method(x_0, h, n, func, a, b, c):
     x_t = [x_0]
     t = 0.0001
@@ -45,27 +62,22 @@ def runge_method(x_0, h, n, func, a, b, c):
         t += h
     return x_t
 
-# каждой точке по иксу присваивает n значений по рунге
-def get_x_for_trajectory_runge(x0):
-    return runge_method(x0, h, n, f_x, a, b, c)
+def get_trajectory(point):
+    return runge_method(point.Ax, h, n, f_x, a, b, c)
 
-# каждой этой точке находим траекторию по рунге
-coords_each_x_of_body = [-1, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1]
+i = 0
+while i < 10:
+    coord_x = get_trajectory(body.material_points[i])
+    trajectory = Point_trajectory(coord_x, runge_method(-1, h, n, f_y, a, b, c))
+    plt.plot(trajectory.x_coords, trajectory.y_coords, color='r')
+    i += 1
 
-# тоже самое для игрека
-massivy_t = runge_method(y_0,h,n,f_y,a,b,c)
+plt.xlabel('x')
+plt.ylabel('y')
+plt.axis('tight')
+# plt.show()
+plt.savefig('plots/trajectory.svg', format='svg')
 
-# создаем траекторию для каждой точки
-for each_coord in coords_each_x_of_body:
-    plt.grid()
-    plt.plot(get_x_for_trajectory_runge(each_coord), massivy_t, color='r')
-    plt.xlabel('x')
-    plt.ylabel('y')
-    plt.axis('tight')
-
-plt.savefig('plots/trajectory.svg', format='svg', dpi=1200)
-
-# строим поле векторов и линии тока
 def getPlotOfField(time):
     X = np.array([-5, -4, -3, -2, -1, 0, 1, 2, 3, 4])
     Y = np.array([-5, -4, -3, -2, -1, 0, 1, 2, 3, 4])
@@ -109,3 +121,9 @@ k = 0.1
 while k < 1.1:
     getPlotOfField(k)
     k += 0.1
+
+
+
+
+
+
