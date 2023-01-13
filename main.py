@@ -109,3 +109,4 @@ k = 0.1
 while k < 1.1:
     getPlotOfField(k)
     k += 0.1
+    ''

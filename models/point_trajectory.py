@@ -5,3 +5,4 @@ class Point_trajectory():
         # self.id = id
         self.x_coords = x_coords
         self.y_coords = y_coords
+        #
